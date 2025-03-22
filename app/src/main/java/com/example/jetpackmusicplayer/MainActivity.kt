@@ -1,47 +1,34 @@
 package com.example.jetpackmusicplayer
 
+import MusicPlayer
+import MusicPlayerScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.jetpackmusicplayer.ui.theme.JetpackMusicPlayerTheme
+import java.io.File
 
 class MainActivity : ComponentActivity() {
+    private var player: MusicPlayer? = null
+    private var musicFilePath: String = "example.mp3"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+
+        player = MusicPlayer()
         setContent {
-            JetpackMusicPlayerTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
-            }
+            MusicPlayerScreen(
+                onPlay = { playMusic() },
+                onStop = { stopMusic() }
+            )
         }
     }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+    private fun playMusic() {
+        val file = File(musicFilePath)
+        player?.play(file)
+    }
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    JetpackMusicPlayerTheme {
-        Greeting("Android")
+    private fun stopMusic() {
+        player?.stop()
     }
 }
