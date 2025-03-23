@@ -5,6 +5,9 @@ import MusicPlayerScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import java.io.File
 
 class MainActivity : ComponentActivity() {
@@ -16,9 +19,11 @@ class MainActivity : ComponentActivity() {
 
         player = MusicPlayer()
         setContent {
+            val isPlaying by remember { derivedStateOf { player?.isPlaying() == true } }
             MusicPlayerScreen(
-                onPlay = { playMusic() },
-                onStop = { stopMusic() }
+                isPlaying = isPlaying,
+                onResume = { resumeMusic() },
+                onPause = { pauseMusic() }
             )
         }
     }
@@ -30,5 +35,13 @@ class MainActivity : ComponentActivity() {
 
     private fun stopMusic() {
         player?.stop()
+    }
+
+    private fun pauseMusic() {
+        player?.pause()
+    }
+
+    private fun resumeMusic() {
+        player?.resume()
     }
 }

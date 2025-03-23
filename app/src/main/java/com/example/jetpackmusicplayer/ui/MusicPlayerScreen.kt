@@ -10,14 +10,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun MusicPlayerScreen(onPlay: () -> Unit, onStop: () -> Unit) {
+fun MusicPlayerScreen(
+    isPlaying: Boolean,
+    onPause: () -> Unit,
+    onResume: () -> Unit,
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
         verticalArrangement = Arrangement.Center
     ) {
-        Button(onClick = { onPlay() }, modifier = Modifier.fillMaxWidth()) { Text("Play") }
-        Button(onClick = { onStop() }, modifier = Modifier.fillMaxWidth()) { Text("Stop") }
+        if (isPlaying) {
+            Button(onClick = { onPause() }, modifier = Modifier.fillMaxWidth()) { Text("Pause") }
+        } else {
+            Button(onClick = { onResume() }, modifier = Modifier.fillMaxWidth()) { Text("Resume") }
+        }
     }
 }
