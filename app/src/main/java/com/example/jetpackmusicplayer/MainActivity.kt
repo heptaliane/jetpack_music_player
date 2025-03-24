@@ -5,10 +5,12 @@ import android.media.MediaPlayer
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import kotlinx.coroutines.delay
 
 class MainActivity : ComponentActivity() {
     private var player: MediaPlayer? = null
@@ -18,17 +20,26 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val isPlaying by remember { derivedStateOf { player?.isPlaying == true } }
-            val currentPosition by remember { mutableIntStateOf(0) }
-            val duration by remember { mutableIntStateOf(100) }
+            val currentPosition = remember { mutableIntStateOf(0) }
+            val duration = remember { mutableIntStateOf(100) }
+
+            LaunchedEffect(isPlaying) {
+                while (isPlaying) {
+                    currentPosition.intValue = player?.currentPosition ?: 0
+                    duration.intValue = player?.duration ?: 100
+                    delay(1000)
+                }
+            }
 
             MusicPlayerScreen(
                 isPlaying = isPlaying,
-                duration = duration,
-                currentPosition = currentPosition,
+                duration = duration.intValue,
+                currentPosition = currentPosition.intValue,
                 onResume = { resumeMusic() },
                 onPause = { pauseMusic() },
                 onSeek = { position ->
                     player?.seekTo(position)
+                    currentPosition.intValue = position
                 }
             )
         }
