@@ -11,12 +11,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import kotlinx.coroutines.delay
+import java.io.File
 
 class MainActivity : ComponentActivity() {
     private var player: MediaPlayer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        startMusic()
 
         setContent {
             val isPlaying by remember { derivedStateOf { player?.isPlaying == true } }
@@ -43,6 +45,23 @@ class MainActivity : ComponentActivity() {
                 }
             )
         }
+    }
+
+    private fun startMusic() {
+        stopMusic()
+        val musicFile = File(getExternalFilesDir(null), "sample.mp3")
+        if (musicFile.exists()) {
+            player = MediaPlayer().apply {
+                setDataSource(musicFile.absolutePath)
+                prepare()
+                start()
+            }
+        }
+    }
+
+    private fun stopMusic() {
+        player?.release()
+        player = null
     }
 
     private fun resumeMusic() {
