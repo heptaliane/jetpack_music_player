@@ -1,5 +1,7 @@
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -7,8 +9,15 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+
+@SuppressLint("DefaultLocale")
+fun formatTime(ms: Int): String {
+    val seconds = ms / 1000
+    return String.format("%02d:%02d", seconds / 60, seconds % 60)
+}
 
 @Composable
 fun MusicPlayerScreen(
@@ -25,12 +34,16 @@ fun MusicPlayerScreen(
             .padding(16.dp),
         verticalArrangement = Arrangement.Center
     ) {
-        Slider(
-            value = currentPosition.toFloat(),
-            onValueChange = { onSeek(it.toInt()) },
-            valueRange = 0f..duration.toFloat(),
-            modifier = Modifier.fillMaxWidth(),
-        )
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(formatTime(currentPosition), modifier = Modifier.padding(end = 8.dp))
+            Slider(
+                value = currentPosition.toFloat(),
+                onValueChange = { onSeek(it.toInt()) },
+                valueRange = 0f..duration.toFloat(),
+                modifier = Modifier.weight(1f),
+            )
+            Text(formatTime(duration), modifier = Modifier.padding(start = 8.dp))
+        }
         if (isPlaying) {
             Button(onClick = { onPause() }, modifier = Modifier.fillMaxWidth()) { Text("Pause") }
         } else {
