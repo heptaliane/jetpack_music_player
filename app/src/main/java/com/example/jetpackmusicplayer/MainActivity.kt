@@ -37,6 +37,9 @@ class MainActivity : ComponentActivity() {
                 isPlaying = isPlaying,
                 duration = duration.intValue,
                 currentPosition = currentPosition.intValue,
+                songTitle = "title",
+                artistName = "artist",
+                albumName = "album",
                 onResume = { resumeMusic() },
                 onPause = { pauseMusic() },
                 onSeek = { position ->

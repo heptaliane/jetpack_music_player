@@ -2,10 +2,13 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,6 +27,9 @@ fun MusicPlayerScreen(
     isPlaying: Boolean,
     currentPosition: Int,
     duration: Int,
+    songTitle: String,
+    albumName: String?,
+    artistName: String?,
     onPause: () -> Unit,
     onResume: () -> Unit,
     onSeek: (Int) -> Unit,
@@ -34,6 +40,14 @@ fun MusicPlayerScreen(
             .padding(16.dp),
         verticalArrangement = Arrangement.Center
     ) {
+        Text(songTitle, style = MaterialTheme.typography.titleLarge)
+        albumName?.let {
+            Text(it, style = MaterialTheme.typography.labelLarge)
+        }
+        artistName?.let {
+            Text(it, style = MaterialTheme.typography.labelLarge)
+        }
+        Spacer(modifier = Modifier.height(16.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(formatTime(currentPosition), modifier = Modifier.padding(end = 8.dp))
             Slider(
