@@ -6,9 +6,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import kotlinx.coroutines.delay
 import java.io.File
@@ -21,20 +20,33 @@ class MainActivity : ComponentActivity() {
         startMusic()
 
         setContent {
-            val isPlaying by remember { derivedStateOf { player?.isPlaying == true } }
+            val isPlaying = remember { mutableStateOf(false) }
             val currentPosition = remember { mutableIntStateOf(0) }
             val duration = remember { mutableIntStateOf(100) }
 
-            LaunchedEffect(isPlaying) {
-                while (isPlaying) {
-                    currentPosition.intValue = player?.currentPosition ?: 0
-                    duration.intValue = player?.duration ?: 100
-                    delay(1000)
+            LaunchedEffect("position") {
+                while (true) {
+                    if (isPlaying.value) {
+                        currentPosition.intValue = player?.currentPosition ?: 0
+                        duration.intValue = player?.duration ?: 0
+                    }
+                    delay(500)
+                }
+            }
+
+            LaunchedEffect("isPlaying") {
+                while (true) {
+                    player?.let {
+                        if (isPlaying.value != it.isPlaying) {
+                            isPlaying.value = it.isPlaying
+                        }
+                    }
+                    delay(50)
                 }
             }
 
             MusicPlayerScreen(
-                isPlaying = isPlaying,
+                isPlaying = isPlaying.value,
                 duration = duration.intValue,
                 currentPosition = currentPosition.intValue,
                 songTitle = "title",
@@ -44,6 +56,7 @@ class MainActivity : ComponentActivity() {
                 onPause = { pauseMusic() },
                 onSeek = { position ->
                     player?.seekTo(position)
+                    player?.start()
                     currentPosition.intValue = position
                 }
             )
