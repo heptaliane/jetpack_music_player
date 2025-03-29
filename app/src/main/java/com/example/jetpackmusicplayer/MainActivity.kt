@@ -1,5 +1,7 @@
 package com.example.jetpackmusicplayer
 
+import MusicMetadata
+import MusicMetadataRetriever
 import MusicPlayerScreen
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -14,6 +16,8 @@ import java.io.File
 
 class MainActivity : ComponentActivity() {
     private var player: MediaPlayer? = null
+    private val retriever = MusicMetadataRetriever()
+    private var currentMusicMetadata: MusicMetadata? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,9 +53,9 @@ class MainActivity : ComponentActivity() {
                 isPlaying = isPlaying.value,
                 duration = duration.intValue,
                 currentPosition = currentPosition.intValue,
-                songTitle = "title",
-                artistName = "artist",
-                albumName = "album",
+                songTitle = currentMusicMetadata?.title ?: currentMusicMetadata?.filename ?: "",
+                artistName = currentMusicMetadata?.artist,
+                albumName = currentMusicMetadata?.album,
                 onResume = { resumeMusic() },
                 onPause = { pauseMusic() },
                 onSeek = { position ->
@@ -72,6 +76,7 @@ class MainActivity : ComponentActivity() {
                 prepare()
                 start()
             }
+            currentMusicMetadata = retriever.getMetadata(musicFile)
         }
     }
 
