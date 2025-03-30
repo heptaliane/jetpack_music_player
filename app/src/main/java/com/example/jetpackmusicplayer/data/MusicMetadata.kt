@@ -1,3 +1,5 @@
+package com.example.jetpackmusicplayer.data
+
 data class MusicMetadata(
     val filename: String,
     val title: String?,

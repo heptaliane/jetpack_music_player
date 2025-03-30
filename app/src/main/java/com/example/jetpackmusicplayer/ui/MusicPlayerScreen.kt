@@ -30,9 +30,11 @@ fun MusicPlayerScreen(
     songTitle: String,
     albumName: String?,
     artistName: String?,
+    loopMode: LoopMode,
     onPause: () -> Unit,
     onResume: () -> Unit,
     onSeek: (Int) -> Unit,
+    onLoopModeChange: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -62,6 +64,10 @@ fun MusicPlayerScreen(
             Button(onClick = { onPause() }, modifier = Modifier.fillMaxWidth()) { Text("Pause") }
         } else {
             Button(onClick = { onResume() }, modifier = Modifier.fillMaxWidth()) { Text("Resume") }
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = onLoopModeChange, modifier = Modifier.fillMaxWidth()) {
+            Text(loopMode.name)
         }
     }
 }

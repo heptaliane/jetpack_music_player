@@ -1,6 +1,6 @@
 package com.example.jetpackmusicplayer
 
-import MusicMetadata
+import LoopMode
 import MusicMetadataRetriever
 import MusicPlayerScreen
 import android.media.MediaPlayer
@@ -11,6 +11,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import com.example.jetpackmusicplayer.data.MusicMetadata
 import kotlinx.coroutines.delay
 import java.io.File
 
@@ -27,6 +28,7 @@ class MainActivity : ComponentActivity() {
             val isPlaying = remember { mutableStateOf(false) }
             val currentPosition = remember { mutableIntStateOf(0) }
             val duration = remember { mutableIntStateOf(100) }
+            val loopMode = remember { mutableStateOf(LoopMode.NONE) }
 
             LaunchedEffect("position") {
                 while (true) {
@@ -56,12 +58,21 @@ class MainActivity : ComponentActivity() {
                 songTitle = currentMusicMetadata?.title ?: currentMusicMetadata?.filename ?: "",
                 artistName = currentMusicMetadata?.artist,
                 albumName = currentMusicMetadata?.album,
+                loopMode = loopMode.value,
                 onResume = { resumeMusic() },
                 onPause = { pauseMusic() },
                 onSeek = { position ->
                     player?.seekTo(position)
                     player?.start()
                     currentPosition.intValue = position
+                },
+                onLoopModeChange = {
+                    loopMode.value = when (loopMode.value) {
+                        LoopMode.NONE -> LoopMode.ONE
+                        LoopMode.ONE -> LoopMode.ALL
+                        LoopMode.ALL -> LoopMode.NONE
+                    }
+                    player?.isLooping = loopMode.value == LoopMode.ONE
                 }
             )
         }
