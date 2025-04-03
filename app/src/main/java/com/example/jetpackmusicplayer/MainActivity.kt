@@ -1,6 +1,7 @@
 package com.example.jetpackmusicplayer
 
 import LoopMode
+import MusicListScreen
 import MusicMetadataRetriever
 import MusicPlayerScreen
 import android.media.MediaPlayer
@@ -12,6 +13,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import com.example.jetpackmusicplayer.data.MusicMetadata
+import getAllMusicFiles
 import kotlinx.coroutines.delay
 import java.io.File
 
@@ -19,10 +21,12 @@ class MainActivity : ComponentActivity() {
     private var player: MediaPlayer? = null
     private val retriever = MusicMetadataRetriever()
     private var currentMusicMetadata: MusicMetadata? = null
+    private var musicData: List<MusicMetadata> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         startMusic()
+        loadMusicMetadata()
 
         setContent {
             val isPlaying = remember { mutableStateOf(false) }
@@ -75,6 +79,8 @@ class MainActivity : ComponentActivity() {
                     player?.isLooping = loopMode.value == LoopMode.ONE
                 }
             )
+
+            MusicListScreen(musicDataList = musicData)
         }
     }
 
@@ -102,5 +108,12 @@ class MainActivity : ComponentActivity() {
 
     private fun pauseMusic() {
         player?.pause()
+    }
+
+    private fun loadMusicMetadata() {
+        val files = getAllMusicFiles(this)
+        musicData = files.map {
+            retriever.getMetadata(it)
+        }
     }
 }
