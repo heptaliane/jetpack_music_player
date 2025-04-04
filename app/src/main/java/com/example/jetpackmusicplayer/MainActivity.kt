@@ -4,20 +4,34 @@ import LoopMode
 import MusicListScreen
 import MusicMetadataRetriever
 import MusicPlayerScreen
+import android.Manifest
+import android.content.pm.PackageManager
 import android.media.MediaPlayer
+import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.core.content.ContextCompat
 import com.example.jetpackmusicplayer.data.MusicMetadata
 import getAllMusicFiles
 import kotlinx.coroutines.delay
 import java.io.File
 
 class MainActivity : ComponentActivity() {
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+            if (isGranted) {
+                loadMusicMetadata()
+            } else {
+                Toast.makeText(this, "Please allow read audio access", Toast.LENGTH_SHORT).show()
+            }
+        }
     private var player: MediaPlayer? = null
     private val retriever = MusicMetadataRetriever()
     private var currentMusicMetadata: MusicMetadata? = null
@@ -25,8 +39,9 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        checkRequestPermission()
         startMusic()
-        loadMusicMetadata()
 
         setContent {
             val isPlaying = remember { mutableStateOf(false) }
@@ -80,7 +95,35 @@ class MainActivity : ComponentActivity() {
                 }
             )
 
-            MusicListScreen(musicDataList = musicData)
+            MusicListScreen(
+                musicDataList = musicData,
+            )
+        }
+    }
+
+    private fun checkRequestPermission() {
+        val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            Manifest.permission.READ_MEDIA_AUDIO
+        } else {
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        }
+
+        when {
+            ContextCompat.checkSelfPermission(
+                this,
+                permission
+            ) == PackageManager.PERMISSION_GRANTED -> {
+                loadMusicMetadata()
+            }
+
+            shouldShowRequestPermissionRationale(permission) -> {
+                Toast.makeText(this, "Please allow read audio access", Toast.LENGTH_SHORT).show()
+                requestPermissionLauncher.launch(permission)
+            }
+
+            else -> {
+                requestPermissionLauncher.launch(permission)
+            }
         }
     }
 
