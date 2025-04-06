@@ -2,7 +2,6 @@ package com.example.jetpackmusicplayer
 
 import LoopMode
 import MusicListScreen
-import MusicMetadataRetriever
 import MusicPlayerScreen
 import android.Manifest
 import android.content.pm.PackageManager
@@ -21,6 +20,8 @@ import androidx.core.content.ContextCompat
 import com.example.jetpackmusicplayer.data.MusicMetadata
 import getAllMusicFiles
 import kotlinx.coroutines.delay
+import retrieveMusicMetadata
+import scanMusicDirectory
 import java.io.File
 
 class MainActivity : ComponentActivity() {
@@ -33,7 +34,6 @@ class MainActivity : ComponentActivity() {
             }
         }
     private var player: MediaPlayer? = null
-    private val retriever = MusicMetadataRetriever()
     private var currentMusicMetadata: MusicMetadata? = null
     private var musicData: List<MusicMetadata> = emptyList()
 
@@ -136,7 +136,7 @@ class MainActivity : ComponentActivity() {
                 prepare()
                 start()
             }
-            currentMusicMetadata = retriever.getMetadata(musicFile)
+            currentMusicMetadata = retrieveMusicMetadata(this, musicFile)
         }
     }
 
@@ -154,9 +154,10 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun loadMusicMetadata() {
+        scanMusicDirectory(this)
         val files = getAllMusicFiles(this)
         musicData = files.map {
-            retriever.getMetadata(it)
+            retrieveMusicMetadata(this, it)
         }
     }
 }
