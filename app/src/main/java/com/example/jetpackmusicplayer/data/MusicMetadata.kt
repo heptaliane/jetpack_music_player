@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 
 data class MusicMetadata(
     val filename: String,
+    val filepath: String,
     val title: String?,
     val album: String?,
     val artist: String?,

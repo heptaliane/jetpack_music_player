@@ -13,6 +13,7 @@ fun retrieveMusicMetadata(context: Context, file: File): MusicMetadata {
 
     val metadata = MusicMetadata(
         filename = file.nameWithoutExtension,
+        filepath = file.absolutePath,
         title = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE),
         album = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM),
         artist = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST),

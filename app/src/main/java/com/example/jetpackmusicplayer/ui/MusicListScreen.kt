@@ -8,14 +8,16 @@ import androidx.compose.ui.unit.dp
 import com.example.jetpackmusicplayer.data.MusicMetadata
 
 @Composable
-fun MusicListScreen(musicDataList: List<MusicMetadata>) {
+fun MusicListScreen(musicDataList: List<MusicMetadata>, onClick: (MusicMetadata) -> Unit) {
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
     ) {
         items(musicDataList) { data ->
-            MusicTrackItem(data)
+            MusicTrackItem(
+                data = data, onClick = onClick
+            )
         }
     }
 }

@@ -1,4 +1,5 @@
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,9 +17,14 @@ import androidx.core.graphics.createBitmap
 import com.example.jetpackmusicplayer.data.MusicMetadata
 
 @Composable
-fun MusicTrackItem(data: MusicMetadata) {
+fun MusicTrackItem(
+    data: MusicMetadata,
+    onClick: (MusicMetadata) -> Unit,
+    modifier: Modifier = Modifier
+) {
     Row(
-        modifier = Modifier
+        modifier = modifier
+            .clickable { onClick(data) }
             .fillMaxWidth()
             .padding(8.dp)
     ) {

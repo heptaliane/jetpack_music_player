@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -97,6 +98,9 @@ class MainActivity : ComponentActivity() {
 
             MusicListScreen(
                 musicDataList = musicData,
+                onClick = { data ->
+                    Log.d("jplayer", "${data}")
+                }
             )
         }
     }
