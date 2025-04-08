@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.createBitmap
 import com.example.jetpackmusicplayer.data.MusicMetadata
+import com.example.jetpackmusicplayer.util.formatTime
 
 @Composable
 fun MusicTrackItem(
@@ -42,7 +43,7 @@ fun MusicTrackItem(
             Text(text = title, style = MaterialTheme.typography.titleLarge)
             Text(text = "Artist: ${data.artist}")
             Text(text = "Album: ${data.album}")
-            Text(text = "Duration: ${data.duration}")
+            Text(text = "Duration: ${data.duration?.let { formatTime(it.toInt()) }}")
         }
     }
 }

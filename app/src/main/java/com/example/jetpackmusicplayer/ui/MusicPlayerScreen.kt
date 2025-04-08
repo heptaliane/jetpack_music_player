@@ -1,4 +1,3 @@
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,12 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-
-@SuppressLint("DefaultLocale")
-fun formatTime(ms: Int): String {
-    val seconds = ms / 1000
-    return String.format("%02d:%02d", seconds / 60, seconds % 60)
-}
+import com.example.jetpackmusicplayer.util.formatTime
 
 @Composable
 fun MusicPlayerScreen(
