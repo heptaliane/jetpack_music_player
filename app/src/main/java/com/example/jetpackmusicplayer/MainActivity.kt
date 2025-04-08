@@ -8,7 +8,6 @@ import android.content.pm.PackageManager
 import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -42,7 +41,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         checkRequestPermission()
-        startMusic()
 
         setContent {
             val isPlaying = remember { mutableStateOf(false) }
@@ -99,7 +97,7 @@ class MainActivity : ComponentActivity() {
             MusicListScreen(
                 musicDataList = musicData,
                 onClick = { data ->
-                    Log.d("jplayer", "${data}")
+                    startMusic(data)
                 }
             )
         }
@@ -131,9 +129,9 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun startMusic() {
+    private fun startMusic(music: MusicMetadata) {
         stopMusic()
-        val musicFile = File(getExternalFilesDir(null), "sample.mp3")
+        val musicFile = File(music.filepath)
         if (musicFile.exists()) {
             player = MediaPlayer().apply {
                 setDataSource(musicFile.absolutePath)
